@@ -2,45 +2,46 @@
 local lfs = require 'lfs'
 local macro = require 'lux.macro'
 local html = require 'compendium.html'
+local node = require 'compendium.node'
 
 local base_path = ...
 local out_path  = "./out"
 
-local pages = {}
-local dirs = { out_path }
+local function generic_path (root, path)
+  return root .. "/" .. path
+end
 
-local function findPages (dir)
-  for input in lfs.dir(base_path .. "/" .. dir) do
-    local path = dir .. input
-    local attr = lfs.attributes(base_path .. "/" .. path)
+local function base (path)
+  return generic_path(base_path, path)
+end
+
+local function out (path)
+  return generic_path(out_path, path)
+end
+
+local tree = node:new{}
+
+local function makeTree (node)
+  for input in lfs.dir(base(node.path)) do
+    local path = node.path .. input
+    local attr = lfs.attributes(base(path))
     if attr.mode == "file" then
-      local page = path:match("^(.+).lua.html$") if page then
-        table.insert(pages, page)
+      local name, format = path:match("^([^.]-)%.(.+)$")
+      if format == "lua.html" then
+        node:addPage(name)
+      elseif format == "md" then
+        node:addContent(name)
+      elseif format == "lua" then
+        node:addGenerator(name)
       end
     elseif attr.mode == "directory" and input ~= "." and input ~= ".." then
-      table.insert(dirs, out_path .. "/" .. path)
-      findPages(path .. "/")
+      makeTree(node:addDir(path))
     end
   end
+  node:sort()
 end
 
-findPages("")
-
-table.sort(dirs)
-table.sort(pages)
-
-do
-  local css_in  = io.open("resources/style.css", 'r')
-  local css = css_in:read('a')
-  css_in.close()
-  for i,dir in ipairs(dirs) do
-    lfs.mkdir(dir)
-    -- export css
-    local css_out = io.open(dir .. "/style.css", 'w')
-    css_out:write(css)
-    css_out:close()
-  end
-end
+makeTree(tree)
 
 local function printPage (output_path, content)
   local output_file = io.open(output_path, 'w')
@@ -51,10 +52,36 @@ local function printPage (output_path, content)
   output_file:close()
 end
 
-for i,page in ipairs(pages) do
-  local page_file = io.open(base_path .. "/" .. page .. ".lua.html", 'r')
-  html.setBasePath(base_path)
-  local content = macro.process(page_file:read('a'), html)
-  page_file:close()
-  printPage(out_path .. "/" .. page .. ".html", content)
+local css do
+  local css_in  = io.open("resources/style.css", 'r')
+  css = css_in:read('a')
+  css_in.close()
 end
+
+html.setBasePath(base_path)
+
+local function walkTree (node)
+  -- create dirs and export stylsheets
+  local path = out(node.path)
+  lfs.mkdir(path)
+  local css_out = io.open(path .. "style.css", 'w')
+  css_out:write(css)
+  css_out:close()
+  local env = setmetatable({ node = node }, { __index = html })
+  for _,page in node:eachPage() do
+    local page_file = io.open(base(page .. ".lua.html"), 'r')
+    local content = macro.process(page_file:read('a'), env)
+    page_file:close()
+    printPage(out(page .. ".html"), content)
+  end
+  for _,generator in node:eachGenerator() do
+    local generator_chunk = assert(load(base(generator .. ".lua"), env))
+    local content = generator_chunk()
+    printPage(out(generator .. ".html"), content)
+  end
+  for _,dir in node:eachDir() do
+    walkTree(dir)
+  end
+end
+
+walkTree(tree)

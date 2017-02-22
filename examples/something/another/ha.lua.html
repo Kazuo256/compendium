@@ -3,6 +3,10 @@ $(header "This is a test")
 
 <body>
 
-  $(content "stuff")
+@ for i,content in node:eachContent() do
+
+  <p>$(i .. ". " .. content)</p>
+
+@ end
 
 </body>
