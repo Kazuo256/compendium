@@ -1,7 +1,7 @@
 
 local lfs = require 'lfs'
-local md = require 'markdown'
 local macro = require 'lux.macro'
+local html = require 'compendium.html'
 
 local base_path = ...
 local out_path  = base_path .. "/out"
@@ -16,31 +16,25 @@ do -- export css
   css_out:close()
 end
 
-local template
-do
-  template_file = io.open("templates/basic.html", 'r')
-  template = template_file:read('a')
-  template_file:close()
-end
-
-local chapters = {}
+local pages = {}
 for input in lfs.dir(base_path) do
-  local chapter = input:match("^(.+).md$")
-  if chapter then
-    table.insert(chapters, chapter)
+  local page = input:match("^(.+).lua.html$")
+  if page then
+    table.insert(pages, page)
   end
 end
 
-table.sort(chapters)
+table.sort(pages)
 
-for i,chapter in ipairs(chapters) do
-  local chapter_file = io.open(base_path.."/"..chapter..".md", 'r')
-  local output_file = io.open(out_path.."/"..chapter..".html", 'w')
-  local content = md(macro.process(chapter_file:read('a'), {}, '%%'))
-  local prev_link = i > 1 and (chapters[i-1]..".html") or '#'
-  local next_link = i < #chapters and (chapters[i+1]..".html") or '#'
-  local output = template:format(content, prev_link, next_link)
-  output_file:write(output)
-  chapter_file:close()
+for i,page in ipairs(pages) do
+  local page_file = io.open(base_path.."/"..page..".lua.html", 'r')
+  local output_file = io.open(out_path.."/"..page..".html", 'w')
+  html.setBasePath(base_path)
+  local content = macro.process(page_file:read('a'), html)
+  page_file:close()
+  output_file:write '<!DOCTYPE html>\n'
+  output_file:write '<html lang="en">\n'
+  output_file:write(content)
+  output_file:write '</html>\n'
   output_file:close()
 end
