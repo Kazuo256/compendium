@@ -18,7 +18,7 @@ local function findPages (dir)
         table.insert(pages, page)
       end
     elseif attr.mode == "directory" and input ~= "." and input ~= ".." then
-      table.insert(dirs, path)
+      table.insert(dirs, out_path .. "/" .. path)
       findPages(path .. "/")
     end
   end
@@ -34,9 +34,9 @@ do
   local css = css_in:read('a')
   css_in.close()
   for i,dir in ipairs(dirs) do
-    lfs.mkdir(out_path .. "/" .. dir)
+    lfs.mkdir(dir)
     -- export css
-    local css_out = io.open(out_path .. "/" .. dir .. "/style.css", 'w')
+    local css_out = io.open(dir .. "/style.css", 'w')
     css_out:write(css)
     css_out:close()
   end
