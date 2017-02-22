@@ -37,8 +37,9 @@ for i,chapter in ipairs(chapters) do
   local chapter_file = io.open(base_path.."/"..chapter..".md", 'r')
   local output_file = io.open(out_path.."/"..chapter..".html", 'w')
   local content = md(macro.process(chapter_file:read('a'), {}, '%%'))
+  local prev_link = i > 1 and (chapters[i-1]..".html") or '#'
   local next_link = i < #chapters and (chapters[i+1]..".html") or '#'
-  local output = template:format(content, next_link)
+  local output = template:format(content, prev_link, next_link)
   output_file:write(output)
   chapter_file:close()
   output_file:close()
