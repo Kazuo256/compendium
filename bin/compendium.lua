@@ -42,15 +42,19 @@ do
   end
 end
 
-for i,page in ipairs(pages) do
-  local page_file = io.open(base_path .. "/" .. page .. ".lua.html", 'r')
-  local output_file = io.open(out_path .. "/" .. page .. ".html", 'w')
-  html.setBasePath(base_path)
-  local content = macro.process(page_file:read('a'), html)
-  page_file:close()
+local function printPage (output_path, content)
+  local output_file = io.open(output_path, 'w')
   output_file:write '<!DOCTYPE html>\n'
   output_file:write '<html lang="en">\n'
   output_file:write(content)
   output_file:write '</html>\n'
   output_file:close()
+end
+
+for i,page in ipairs(pages) do
+  local page_file = io.open(base_path .. "/" .. page .. ".lua.html", 'r')
+  html.setBasePath(base_path)
+  local content = macro.process(page_file:read('a'), html)
+  page_file:close()
+  printPage(out_path .. "/" .. page .. ".html", content)
 end
