@@ -5,6 +5,7 @@ local macro = require 'lux.macro'
 local html = {}
 
 local base_path = ""
+local output_path = ""
 
 local HEAD = [[
 <head>
@@ -22,8 +23,9 @@ local REQUIRE_BOOTSTRAP = [[
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 ]]
 
-function html.setBasePath (path)
-  base_path = path
+function html.setBasePaths (in_path, out_path)
+  base_path = in_path
+  output_path = out_path
 end
 
 function html.header (title)
@@ -35,6 +37,15 @@ end
 function html.content (filename)
   local content_file = io.open(base_path.."/"..filename..".md", 'r')
   return md(macro.process(content_file:read('a'), html))
+end
+
+function html.printPage (path, content)
+  local output_file = io.open(output_path .. "/" .. path .. ".html", 'w')
+  output_file:write '<!DOCTYPE html>\n'
+  output_file:write '<html lang="en">\n'
+  output_file:write(content)
+  output_file:write '</html>\n'
+  output_file:close()
 end
 
 return html

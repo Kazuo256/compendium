@@ -67,12 +67,11 @@ local function walkTree (node)
     local page_file = io.open(base(page .. ".lua.html"), 'r')
     local content = macro.process(page_file:read('a'), env)
     page_file:close()
-    printPage(out(page .. ".html"), content)
+    html.printPage(page, content)
   end
   for _,generator in node:eachGenerator() do
     local generator_chunk = assert(load(base(generator .. ".lua"), env))
     local content = generator_chunk()
-    printPage(out(generator .. ".html"), content)
   end
   for _,dir in node:eachDir() do
     walkTree(dir)
