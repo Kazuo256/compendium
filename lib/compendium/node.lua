@@ -26,6 +26,22 @@ function node:eachGenerator ()
   return ipairs(self.generators)
 end
 
+function node:getDir(idx)
+  return self.dirs[idx]
+end
+
+function node:getPage(idx)
+  return self.pages[idx]
+end
+
+function node:getContent(idx)
+  return self.contents[idx]
+end
+
+function node:getGenerator(idx)
+  return self.generators[idx]
+end
+
 function node:addDir (path)
   local child = node:new { path = path .. "/" }
   table.insert(self.dirs, child)

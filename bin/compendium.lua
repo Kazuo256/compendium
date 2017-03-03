@@ -70,7 +70,8 @@ local function walkTree (node)
     html.printPage(page, content)
   end
   for _,generator in node:eachGenerator() do
-    local generator_chunk = assert(load(base(generator .. ".lua"), env))
+    local generator_chunk = assert(loadfile(base(generator .. ".lua"),
+                                            't', env))
     local content = generator_chunk()
   end
   for _,dir in node:eachDir() do
