@@ -3,6 +3,7 @@ local lfs = require 'lfs'
 local macro = require 'lux.macro'
 local html = require 'compendium.html'
 local node = require 'compendium.node'
+local css = require 'compendium.css'
 
 local base_path = ...
 local out_path  = "./out"
@@ -50,12 +51,6 @@ local function printPage (output_path, content)
   output_file:write(content)
   output_file:write '</html>\n'
   output_file:close()
-end
-
-local css do
-  local css_in  = io.open("resources/style.css", 'r')
-  css = css_in:read('a')
-  css_in.close()
 end
 
 html.setBasePath(base_path)
