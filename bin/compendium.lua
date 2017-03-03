@@ -53,7 +53,7 @@ local function printPage (output_path, content)
   output_file:close()
 end
 
-html.setBasePath(base_path)
+html.setBasePaths(base_path, out_path)
 
 local function walkTree (node)
   -- create dirs and export stylsheets
