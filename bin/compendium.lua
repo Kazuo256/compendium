@@ -63,12 +63,6 @@ local function walkTree (node)
   css_out:write(css)
   css_out:close()
   local env = setmetatable({ node = node }, { __index = html })
-  for _,page in node:eachPage() do
-    local page_file = io.open(base(page .. ".lua.html"), 'r')
-    local content = macro.process(page_file:read('a'), env)
-    page_file:close()
-    html.printPage(page, content)
-  end
   for _,generator in node:eachGenerator() do
     local generator_chunk = assert(loadfile(base(generator .. ".lua"),
                                             't', env))

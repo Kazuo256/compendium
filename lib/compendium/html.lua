@@ -39,6 +39,16 @@ function html.content (filename)
   return md(macro.process(content_file:read('a'), html))
 end
 
+function html.render (page)
+  return function (env)
+    local page_file = io.open(base_path .. '/' .. page .. ".lua.html"), 'r')
+    local content = macro.process(page_file:read('a'),
+                                  setmetatable(env, { __index = html })
+    page_file:close()
+    return html.printPage(page, content)
+  end
+end
+
 function html.printPage (path, content)
   local output_file = io.open(output_path .. "/" .. path .. ".html", 'w')
   output_file:write '<!DOCTYPE html>\n'
