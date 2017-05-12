@@ -38,7 +38,7 @@ function html.header (title)
     if opt.bootstrap then
       table.insert(extras, REQUIRE_BOOTSTRAP)
     end
-    for stylesheet in ipairs(opt.stylesheets or {}) do
+    for _,stylesheet in ipairs(opt.stylesheets or {}) do
       table.insert(extras, LINK_STYLESHEET:format(stylesheet))
     end
     return HEAD:format(title, table.concat(extras, "\n"))
