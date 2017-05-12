@@ -62,7 +62,7 @@ local function walkTree (node)
   local css_out = io.open(path .. "style.css", 'w')
   css_out:write(css)
   css_out:close()
-  local env = setmetatable({ node = node }, { __index = html })
+  local env = setmetatable({ node = node, print = print }, { __index = html })
   for _,generator in node:eachGenerator() do
     local generator_chunk = assert(loadfile(base(generator .. ".lua"),
                                             't', env))
