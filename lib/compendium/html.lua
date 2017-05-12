@@ -30,7 +30,11 @@ end
 
 function html.header (title)
   return function (opt)
-    return HEAD:format(title, opt.bootstrap and REQUIRE_BOOTSTRAP or "")
+    local extras = {}
+    if opt.bootstrap then
+      table.insert(extras, REQUIRE_BOOTSTRAP)
+    end
+    return HEAD:format(title, table.concat(extras, "\n"))
   end
 end
 
