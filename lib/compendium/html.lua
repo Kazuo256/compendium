@@ -41,7 +41,7 @@ end
 
 function html.render (page)
   return function (env)
-    local page_file = io.open(base_path .. '/' .. page .. ".lua.html"), 'r')
+    local page_file = io.open(base_path .. '/' .. page .. ".lua.html", 'r')
     local content = macro.process(page_file:read('a'),
                                   setmetatable(env, { __index = html })
     page_file:close()
