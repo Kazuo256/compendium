@@ -45,7 +45,7 @@ function html.render (page)
     local content = macro.process(page_file:read('a'),
                                   setmetatable(env, { __index = html })
     page_file:close()
-    return html.printPage(page, content)
+    return content
   end
 end
 
