@@ -23,6 +23,10 @@ local REQUIRE_BOOTSTRAP = [[
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 ]]
 
+local LINK_STYLESHEET = [[
+<link rel="stylesheet" href="%s.css">
+]]
+
 function html.setBasePaths (in_path, out_path)
   base_path = in_path
   output_path = out_path
@@ -33,6 +37,9 @@ function html.header (title)
     local extras = {}
     if opt.bootstrap then
       table.insert(extras, REQUIRE_BOOTSTRAP)
+    end
+    for stylesheet in ipairs(opt.stylesheets or {}) do
+      table.insert(extras, LINK_STYLESHEET:format(stylesheet))
     end
     return HEAD:format(title, table.concat(extras, "\n"))
   end
