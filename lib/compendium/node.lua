@@ -62,7 +62,7 @@ end
 
 function node:sort ()
   table.sort(self.pages)
-  table.sort(self.dirs)
+  table.sort(self.dirs, function (a,b) return a.path < b.path end)
   table.sort(self.contents)
   table.sort(self.generators)
 end
