@@ -45,9 +45,9 @@ function html.header (title)
   end
 end
 
-function html.content (filename)
+function html.content (filename, env)
   local content_file = io.open(base_path.."/"..filename..".md", 'r')
-  return md(macro.process(content_file:read('a'), html))
+  return md(macro.process(content_file:read('a'), env or html))
 end
 
 function html.render (page)
