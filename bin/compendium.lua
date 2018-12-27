@@ -44,15 +44,6 @@ end
 
 makeTree(tree)
 
-local function printPage (output_path, content)
-  local output_file = io.open(output_path, 'w')
-  output_file:write '<!DOCTYPE html>\n'
-  output_file:write '<html lang="en">\n'
-  output_file:write(content)
-  output_file:write '</html>\n'
-  output_file:close()
-end
-
 html.setBasePaths(base_path, out_path)
 
 local function walkTree (node)
