@@ -2,7 +2,7 @@
 package = "compendium"
 version = "scm-3"
 source = {
-  url = "https://github.com/kazuo256/compendium"
+  url = "https://github.com/lux-archive/compendium"
 }
 description = {
   summary = "A static HTML generation tool",
@@ -24,8 +24,8 @@ build = {
     bin = { "bin/compendium" }
   },
   modules = {
-    ["compendium.css"] = "lib/compendium/css.lua",
-    ["compendium.html"] = "lib/compendium/html.lua",
-    ["compendium.node"] = "lib/compendium/node.lua"
+    ["compendium.css"] = "lua/compendium/css.lua",
+    ["compendium.html"] = "lua/compendium/html.lua",
+    ["compendium.node"] = "lua/compendium/node.lua"
   },
 }
