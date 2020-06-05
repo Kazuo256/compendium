@@ -1,5 +1,5 @@
 package = "compendium"
-version = "scm-1"
+version = "scm-2"
 source = {
   url = "https://github.com/kazuo256/compendium/"
 }
@@ -8,14 +8,13 @@ description = {
   detailed = [[
 WIP
 ]],
-  --homepage = "http://kazuo256.github.io/luxproject/",
   license = "MIT/X11"
 }
 dependencies = {
-  "lua >= 5.3, < 5.4",
+  "lua >= 5.3",
   "luafilesystem",
   "markdown",
-  "luxproject"
+  "penlight"
 }
 build = {
   type = "builtin",
@@ -24,7 +23,6 @@ build = {
     ["compendium.html"] = "lib/compendium/html.lua",
     ["compendium.node"] = "lib/compendium/node.lua"
   },
-  --copy_directories = { "doc" },
   install = {
     bin = {
       compendium = "bin/compendium.lua"

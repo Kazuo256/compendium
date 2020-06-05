@@ -1,8 +1,8 @@
 
 local md = require 'markdown'
-local macro = require 'lux.macro'
+local template = require 'pl.template'
 
-local html = {}
+local HTML = {}
 
 local base_path = ""
 local output_path = ""
@@ -27,12 +27,12 @@ local LINK_STYLESHEET = [[
 <link rel="stylesheet" href="%s.css">
 ]]
 
-function html.setBasePaths (in_path, out_path)
+function HTML.setBasePaths (in_path, out_path)
   base_path = in_path
   output_path = out_path
 end
 
-function html.header (title)
+function HTML.header (title)
   return function (opt)
     local extras = {}
     if opt.bootstrap then
@@ -45,22 +45,31 @@ function html.header (title)
   end
 end
 
-function html.content (filename, env)
-  local content_file = io.open(base_path.."/"..filename..".md", 'r')
-  return md(macro.process(content_file:read('a'), env or html))
+function HTML.wrap (env)
+  env.__parent = env.__parent or HTML
+  return env
 end
 
-function html.render (page)
+function HTML.content (content_path)
   return function (env)
-    local page_file = io.open(base_path .. '/' .. page .. ".lua.html", 'r')
-    local content = macro.process(page_file:read('a'),
-                                  setmetatable(env, { __index = html }))
-    page_file:close()
-    return content
+    local content_file = io.open(base_path.."/"..content_path..".md", 'r')
+    local contents = md(template.substitute(content_file:read('a'),
+                                            HTML.wrap(env)))
+    content_file:close()
+    return contents
   end
 end
 
-function html.printPage (path, content)
+function HTML.render (page_path)
+  return function (env)
+    local page_file = io.open(base_path .. '/' .. page_path .. ".lua.html", 'r')
+    local contents = template.substitute(page_file:read('a'), HTML.wrap(env))
+    page_file:close()
+    return contents
+  end
+end
+
+function HTML.printPage (path, content)
   local output_file = io.open(output_path .. "/" .. path .. ".html", 'w')
   output_file:write '<!DOCTYPE html>\n'
   output_file:write '<html lang="en">\n'
@@ -69,4 +78,5 @@ function html.printPage (path, content)
   output_file:close()
 end
 
-return html
+return HTML
+

@@ -1,8 +1,7 @@
 
 local lfs = require 'lfs'
-local macro = require 'lux.macro'
 local html = require 'compendium.html'
-local node = require 'compendium.node'
+local Node = require 'compendium.node'
 local css = require 'compendium.css'
 
 local base_path = ...
@@ -20,7 +19,7 @@ local function out (path)
   return generic_path(out_path, path)
 end
 
-local tree = node:new{}
+local tree = Node:new{}
 
 local function makeTree (node)
   for input in lfs.dir(base(node.path)) do
@@ -53,12 +52,11 @@ local function walkTree (node)
   local css_out = io.open(path .. "style.css", 'w')
   css_out:write(css)
   css_out:close()
-  local env = setmetatable({ node = node, print = print, macro = macro },
-                           { __index = html })
+  local env = html.env { node = node, print = print }
   for _,generator in node:eachGenerator() do
     local generator_chunk = assert(loadfile(base(generator .. ".lua"),
                                             't', env))
-    local content = generator_chunk()
+    generator_chunk()
   end
   for _,dir in node:eachDir() do
     walkTree(dir)

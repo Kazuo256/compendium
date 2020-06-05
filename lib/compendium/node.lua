@@ -1,70 +1,70 @@
 
-local node = require 'lux.class' :new {
-  path = ""
-}
+local Node = require 'pl.class' ()
 
-node.__init = {
-  dirs = {},
-  pages = {},
-  contents = {},
-  generators = {}
-}
+function Node:_init(path)
+  self.path = path or ""
+  self.dirs = {}
+  self.pages = {}
+  self.contents = {}
+  self.generators = {}
+end
 
-function node:eachDir ()
+function Node:eachDir ()
   return ipairs(self.dirs)
 end
 
-function node:eachPage ()
+function Node:eachPage ()
   return ipairs(self.pages)
 end
 
-function node:eachContent ()
+function Node:eachContent ()
   return ipairs(self.contents)
 end
 
-function node:eachGenerator ()
+function Node:eachGenerator ()
   return ipairs(self.generators)
 end
 
-function node:getDir(idx)
+function Node:getDir(idx)
   return self.dirs[idx]
 end
 
-function node:getPage(idx)
+function Node:getPage(idx)
   return self.pages[idx]
 end
 
-function node:getContent(idx)
+function Node:getContent(idx)
   return self.contents[idx]
 end
 
-function node:getGenerator(idx)
+function Node:getGenerator(idx)
   return self.generators[idx]
 end
 
-function node:addDir (path)
-  local child = node:new { path = path .. "/" }
+function Node:addDir (path)
+  local child = Node(path .. "/")
   table.insert(self.dirs, child)
   return child
 end
 
-function node:addPage (path)
+function Node:addPage (path)
   table.insert(self.pages, path)
 end
 
-function node:addContent (path)
+function Node:addContent (path)
   table.insert(self.contents, path)
 end
 
-function node:addGenerator (path)
+function Node:addGenerator (path)
   table.insert(self.generators, path)
 end
 
-function node:sort ()
+function Node:sort ()
   table.sort(self.pages)
   table.sort(self.dirs, function (a,b) return a.path < b.path end)
   table.sort(self.contents)
   table.sort(self.generators)
 end
 
-return node
+return Node
+
