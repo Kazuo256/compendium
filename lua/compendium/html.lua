@@ -46,15 +46,17 @@ function HTML.header (title)
 end
 
 function HTML.wrap (env)
-  env.__parent = env.__parent or HTML
+  env._parent = env._parent or HTML
+  env._escape = env._escape or '@'
   return env
 end
 
 function HTML.content (content_path)
   return function (env)
+    env = HTML.wrap(env)
     local content_file = io.open(base_path.."/"..content_path..".md", 'r')
-    local contents = md(template.substitute(content_file:read('a'),
-                                            HTML.wrap(env)))
+    local contents = md(assert(template.substitute(content_file:read('a'),
+                                                   env)))
     content_file:close()
     return contents
   end
@@ -63,7 +65,8 @@ end
 function HTML.render (page_path)
   return function (env)
     local page_file = io.open(base_path .. '/' .. page_path .. ".lua.html", 'r')
-    local contents = template.substitute(page_file:read('a'), HTML.wrap(env))
+    local contents = assert(template.substitute(page_file:read('a'),
+                                                HTML.wrap(env)))
     page_file:close()
     return contents
   end

@@ -2,7 +2,8 @@
 package = "compendium"
 version = "scm-3"
 source = {
-  url = "https://github.com/lux-archive/compendium"
+  url = "https://github.com/lux-archive/compendium",
+  branch = "master"
 }
 description = {
   summary = "A static HTML generation tool",

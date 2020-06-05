@@ -1,7 +1,7 @@
 #!/usr/bin/env lua
 
 local lfs = require 'lfs'
-local html = require 'compendium.html'
+local HTML = require 'compendium.html'
 local Node = require 'compendium.node'
 local css = require 'compendium.css'
 
@@ -20,7 +20,7 @@ local function out (path)
   return generic_path(out_path, path)
 end
 
-local tree = Node:new{}
+local tree = Node()
 
 local function makeTree (node)
   for input in lfs.dir(base(node.path)) do
@@ -28,7 +28,7 @@ local function makeTree (node)
     local attr = lfs.attributes(base(path))
     if attr.mode == "file" then
       local name, format = path:match("^([^.]-)%.(.+)$")
-      if format == "lua.html" then
+      if format == "lua.HTML" then
         node:addPage(name)
       elseif format == "md" then
         node:addContent(name)
@@ -44,7 +44,7 @@ end
 
 makeTree(tree)
 
-html.setBasePaths(base_path, out_path)
+HTML.setBasePaths(base_path, out_path)
 
 local function walkTree (node)
   -- create dirs and export stylsheets
@@ -53,7 +53,7 @@ local function walkTree (node)
   local css_out = io.open(path .. "style.css", 'w')
   css_out:write(css)
   css_out:close()
-  local env = html.env { node = node, print = print }
+  local env = setmetatable({ node = node, print = print }, { __index = HTML })
   for _,generator in node:eachGenerator() do
     local generator_chunk = assert(loadfile(base(generator .. ".lua"),
                                             't', env))
