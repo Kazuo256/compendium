@@ -1,5 +1,5 @@
 package = "compendium"
-version = "scm-2"
+version = "scm-3"
 source = {
   url = "https://github.com/kazuo256/compendium/"
 }
@@ -24,8 +24,6 @@ build = {
     ["compendium.node"] = "lib/compendium/node.lua"
   },
   install = {
-    bin = {
-      compendium = "bin/compendium.lua"
-    }
+    bin = { "bin/compendium" }
   }
 }

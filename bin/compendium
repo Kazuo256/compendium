@@ -1,3 +1,4 @@
+#!/usr/bin/env lua
 
 local lfs = require 'lfs'
 local html = require 'compendium.html'
