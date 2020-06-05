@@ -9,6 +9,7 @@ description = {
   detailed = [[
 WIP
 ]],
+  homepage = "https://github.com/lux-archive/compendium",
   license = "MIT/X11",
   maintainer = "kazuo256@gmail.com"
 }
